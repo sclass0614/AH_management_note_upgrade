@@ -1,0 +1,35 @@
+@media print {
+    /* ===== 인쇄용 페이지 설정 ===== */
+    @page {
+        size: A4;        /* A4 용지 크기로 설정 */
+        margin: 0;       /* 페이지 여백 제거 (전체 용지 사용) */
+    }
+
+    /* ===== 전체 레이아웃 설정 ===== */
+    html, body {
+        height: auto !important;      /* 내용에 따라 자동 높이 조정 */
+        min-height: 100% !important;  /* 최소한 화면 높이만큼 보장 */
+        background-color: white !important;
+    }
+
+    /* ===== 인쇄 시 숨길 요소들 ===== */
+    .header,
+    .edit-panel {
+        display: none !important;    /* 헤더와 편집 패널을 인쇄에서 제외 */
+    }
+
+    /* ===== 페이지 나눔 설정 ===== */
+    * {
+        page-break-inside: auto !important;   /* 요소 내부에서 페이지 나눔 허용 */
+        page-break-after: auto !important;    /* 요소 뒤에서 페이지 나눔 허용 */
+        page-break-before: auto !important;   /* 요소 앞에서 페이지 나눔 허용 */
+    }
+    .report-container {
+        background-color: white !important;
+    }
+
+    .a4-paper {
+        background-color: white !important;
+        box-shadow: none !important;
+    }
+}

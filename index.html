@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>직원운영일지</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="print_style.css">
+    <!-- Supabase JS 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <!-- Supabase 초기화 스크립트 -->
+    <script src="supabase.js"></script>
+    <!-- 인증 파일 -->
+    <script type="module" src="https://sclass0614.github.io/authCheck/authCheck.js"></script>
+  </head>
+  <body>
+    <div class="main-container">
+      <!-- 헤더 부분 -->
+      <div class="header" id="headerSection">
+        <div class="title" id="pageTitle">
+          우리집 운영일지
+        </div>
+        <div class="header-controls">
+          <div class="date-section">
+            <label for="datePicker">날짜:</label>
+            <input type="date" id="datePicker" class="date-input">
+          </div>
+          <div class="button-section">
+            <button class="update-btn" id="updateReportBtn">업데이트</button>
+            <button class="print-btn" id="printBtn">인쇄</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 메인 콘텐츠 영역 -->
+      <div class="content-area">
+        <!-- 좌측: A4용지 형태의 보고서 컨테이너 -->
+        <div class="report-container">
+          <div class="a4-paper">
+            <div class="report-header">
+              <h1>우리집 운영일지</h1>
+              <div class="report-date" id="reportDate"></div>
+            </div>
+            
+            <div class="report-section">
+              <h2>◎ 회원 운영현황</h2> 
+                              <div class="member-status-container">
+                    <table class="member-status-table">
+                        <tr>
+                            <td class="status-label">정원:</td>
+                            <td class="status-count editable-cell" id="capacityCountCell" data-type="count">47명</td>
+                            <td class="status-detail editable-cell" id="capacityDetailCell" data-type="list"></td>
+                        </tr>
+                        <tr>
+                            <td class="status-label">현원:</td>
+                            <td class="status-count editable-cell" id="currentMemberCountCell" data-type="count">0명</td>
+                            <td class="status-detail editable-cell" id="currentMemberDetailCell" data-type="list"></td>
+                        </tr>
+                        <tr>
+                            <td class="status-label">이용인원:</td>
+                            <td class="status-count editable-cell" id="attendanceCountCell" data-type="count">0명</td>
+                            <td class="status-detail editable-cell" id="attendanceDetailCell" data-type="list"></td>
+                        </tr>
+                        <tr>
+                            <td class="status-label">결석자:</td>
+                            <td class="status-count editable-cell" id="absentCountCell" data-type="count">0명</td>
+                            <td class="status-detail editable-cell" id="absentListCell" data-type="list"></td>
+                        </tr>
+                        <tr>
+                            <td class="status-label">휴무자:</td>
+                            <td class="status-count editable-cell" id="restDayCountCell" data-type="count">0명</td>
+                            <td class="status-detail editable-cell" id="restDayListCell" data-type="list"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="report-section">
+              <h2>1. 전달사항</h2>
+              <div class="report-textarea" id="handoverContent" contenteditable="false"></div>
+            </div>
+            
+            <div class="report-section">
+              <h2>2. 어르신 특이사항</h2>
+              <div class="report-textarea" id="elderlyContent" contenteditable="false"></div>
+            </div>
+            
+            <div class="report-section">
+              <h2>3. 기본규칙</h2>
+              <div class="report-textarea" id="basicRulesContent" contenteditable="false"></div>
+            </div>
+            
+            <div class="report-section">
+              <h2>4. 기타사항</h2>
+              <div class="report-textarea" id="otherMattersContent" contenteditable="false"></div>
+            </div>
+            
+            <div class="report-section individual-work-section">
+              <h2>5. 개인업무일지</h2>
+              <div class="table-container">
+                                     <table class="report-table" id="individualWorkTable">
+                       <thead>
+                         <tr>
+                           <th>담당직종</th>
+                           <th>직원번호</th>
+                           <th>직원명</th>
+                           <th>개인업무</th>
+                         </tr>
+                       </thead>
+                       <tbody id="individualWorkTableBody">
+                       </tbody>
+                     </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 우측: 편집 패널 -->
+        <div class="edit-panel">
+
+          <div class="edit-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="employeeNumber">직원번호:</label>
+                <input type="text" id="employeeNumber" class="form-input" placeholder="직원번호를 입력하세요" readonly>
+              </div>
+
+              <div class="form-group">
+                <label for="employeeName">직원명:</label>
+                <input type="text" id="employeeName" class="form-input" placeholder="직원명을 입력하세요" readonly>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="originalEmployeeNumber">기 작성 직원번호:</label>
+                <input type="text" id="originalEmployeeNumber" class="form-input" placeholder="기존 작성자 직원번호" readonly>
+              </div>
+
+              <div class="form-group">
+                <label for="originalEmployeeName">기 작성 직원명:</label>
+                <input type="text" id="originalEmployeeName" class="form-input" placeholder="기존 작성자 직원명" readonly>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="categorySelect">카테고리:</label>
+              <select id="categorySelect" class="form-select">
+                <option value="">카테고리를 선택하세요</option>
+                <option value="전달사항">전달사항</option>
+                <option value="어르신 특이사항">어르신 특이사항</option>
+                <option value="기본규칙">기본규칙</option>
+                <option value="기타사항">기타사항</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="contentTextarea">내용:</label>
+              <textarea id="contentTextarea" class="form-textarea" placeholder="내용을 입력하세요"></textarea>
+            </div>
+
+            <button class="submit-btn" id="submitBtn">입력</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
