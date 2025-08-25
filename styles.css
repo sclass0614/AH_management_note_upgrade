@@ -1037,6 +1037,12 @@ body {
     .edit-modal-form-textarea {
         min-height: 200px;
     }
+
+    @media (max-width: 480px) {
+        .a4-paper {
+            transform: scale(0.6);
+        }
+    }
 }
 
 
