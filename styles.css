@@ -126,7 +126,7 @@ body {
     box-sizing: border-box;
     flex-shrink: 0; /* A4 용지가 줄어들지 않도록 설정 */
     /* 창이 줄어들 때 비율을 유지하면서 축소 */
-    transform-origin: top left;
+    transform-origin: top center;
     overflow-x: hidden; /* A4용지 내부 가로 스크롤 방지 */
 }
 
@@ -1041,10 +1041,56 @@ body {
 
 }
 
-    @media (max-width: 480px) {
-        .a4-paper {
-            transform: scale(0.6);
-        }
+@media (max-width: 480px) {
+    .report-container {
+        overflow-x: visible !important; /* transform이 잘리지 않도록 */
+        min-width: 126mm !important; /* 축소된 A4 크기에 맞춤 */
+        padding: 0 !important;
     }
-
-
+    
+    .a4-paper {
+        min-width: 126mm !important; /* 210mm * 0.6 */
+        width: 126mm !important;
+        flex-shrink: 1 !important; /* 축소 허용 */
+        font-size: 9.6px !important; /* 16px * 0.6 */
+        line-height: 1.6;
+        margin: auto !important; /* 중앙 정렬 */
+        padding :35px !important;
+    }
+    
+    /* 방법 1: 모든 텍스트 요소를 한 번에 조정 */
+    .a4-paper * {
+        font-size: 9.6px !important; /* 16px * 0.6 */
+    }
+    
+    /* 방법 2: 제목 요소들만 따로 조정 */
+    .a4-paper .report-header h1,
+    .a4-paper .report-section h2 {
+        font-size: 14.4px !important; /* 24px * 0.6 */
+    }
+    
+    /* 방법 3: 작은 텍스트 요소들 그룹화 */
+    .a4-paper .report-date,
+    .a4-paper .status-label,
+    .a4-paper .status-count,
+    .a4-paper .status-detail {
+        font-size: 9.6px !important; /* 16px * 0.6 */
+    }
+    
+    /* 방법 4: 패딩/마진도 그룹화 */
+    .a4-paper .member-status-container,
+    .a4-paper .status-label,
+    .a4-paper .status-count,
+    .a4-paper .status-detail {
+        padding: 4.8px !important; /* 8px * 0.6 */
+    }
+    
+    .a4-paper .member-status-container {
+        margin-bottom: 9px !important; /* 15px * 0.6 */
+    }
+    
+    .a4-paper .status-label,
+    .a4-paper .status-count {
+        width: 48px !important; /* 80px * 0.6 */
+    }
+}
